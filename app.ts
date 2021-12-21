@@ -1,20 +1,17 @@
 import express from 'express'
-import { InversifyExpressServer } from 'inversify-express-utils'
 import cors from 'cors'
 import connectDb from './Infrastructure/db/db'
-import { container } from './Continar'
 import './Web/controllers/TodoController'
-
+import './Web/controllers/UserController'
+import todoRoute from './Web/Routes/TodoRoute'
+import { userRouter } from './Web/Routes/UserRoute'
 export async function setup() {
   connectDb()
-
-  const server = new InversifyExpressServer(container)
-  server.setConfig(app => {
-    app.use(express.json())
-    app.use(cors())
-  })
-
-  const app = server.build()
+  const app = express()
+  app.use(express.json())
+  app.use(cors())
+  app.use('/todo', todoRoute)
+  app.use('/user', userRouter)
 
   app.get('/', async (req, res) => {
     res.send('hello')

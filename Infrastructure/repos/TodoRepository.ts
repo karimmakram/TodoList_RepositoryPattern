@@ -1,20 +1,18 @@
 import { Todo } from '../../Domain/models/Todo.model'
 import { ITodo } from '../../Domain/interfaces/ITodo'
-import { injectable } from 'inversify'
-import { Model } from 'mongoose'
+import { Repository } from './Repository'
 
-@injectable()
-export class TodoRepository {
-  model: Model<InstanceType<any>>
-  constructor() {
-    this.model = new Todo().getModelForClass(Todo)
+export class TodoRepository extends Repository {
+  constructor(todo: Todo) {
+    super(todo)
   }
 
   async create(data: ITodo) {
     try {
       return await new this.model({
         title: data.title,
-        completed: data.completed ? data.completed : false
+        completed: data.completed ? data.completed : false,
+        user: data.user
       }).save()
     } catch (error) {
       throw new Error(String(error))
