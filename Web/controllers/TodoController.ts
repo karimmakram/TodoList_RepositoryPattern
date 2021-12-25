@@ -1,11 +1,10 @@
 import { ITodo } from '../../Domain/interfaces/ITodo'
 import { TodoService } from '../../Domain/service/TodoService'
 import { Request, Response } from 'express'
-import { Todo } from '../../Domain/models/Todo.model'
 import { TodoRepository } from '../../Infrastructure/repos/TodoRepository'
 
 export class TodoController {
-  constructor(private readonly todoService: TodoService) {}
+  private todoService = new TodoService(new TodoRepository())
 
   async store(req: Request, res: Response) {
     try {
@@ -36,6 +35,4 @@ export class TodoController {
   }
 }
 
-export default new TodoController(
-  new TodoService(new TodoRepository(new Todo()))
-)
+export default new TodoController()

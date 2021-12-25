@@ -16,3 +16,14 @@ userRouter.post(
   ],
   (req: Request, res: Response) => userController.create(req, res)
 )
+
+//@POST login @public
+
+userRouter.post(
+  '/login',
+  [
+    check('email', 'plases send valid data').exists(),
+    check('password', 'plases send valid data').exists()
+  ],
+  (req, res) => userController.login(req, res)
+)

@@ -3,8 +3,8 @@ import { ITodo } from '../../Domain/interfaces/ITodo'
 import { Repository } from './Repository'
 
 export class TodoRepository extends Repository {
-  constructor(todo: Todo) {
-    super(todo)
+  constructor() {
+    super(new Todo())
   }
 
   async create(data: ITodo) {
@@ -17,13 +17,5 @@ export class TodoRepository extends Repository {
     } catch (error) {
       throw new Error(String(error))
     }
-  }
-
-  async findAll() {
-    return await this.model.find({})
-  }
-
-  async findById(id: string) {
-    return await this.model.findById(id)
   }
 }

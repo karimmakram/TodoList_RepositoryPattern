@@ -4,4 +4,12 @@ export abstract class Repository {
   constructor(entity) {
     this.model = entity.getModelForClass(entity)
   }
+
+  abstract create(data)
+  async findAll() {
+    return await this.model.find()
+  }
+  async findById(id: string) {
+    return await this.model.findById(id)
+  }
 }

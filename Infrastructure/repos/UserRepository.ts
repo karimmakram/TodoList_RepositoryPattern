@@ -2,20 +2,16 @@ import { User } from '../../Domain/models/User.model'
 import { IUser } from '../../Domain/interfaces/IUser'
 import { Repository } from './Repository'
 import jsw from 'jsonwebtoken'
+import bcrypt from 'bcrypt'
 export class UserRepository extends Repository {
-  constructor(user: User) {
-    super(user)
+  constructor() {
+    super(new User())
   }
 
   async create(data: IUser) {
     try {
       const user = await new this.model({ ...data }).save()
-      return {
-        id: user._id,
-        name: user.name,
-        email: user.email,
-        token: await this.createToken(user._id)
-      }
+      return await this.toJson(user)
     } catch (error) {
       throw new Error('Invaild Data')
     }
@@ -27,5 +23,18 @@ export class UserRepository extends Repository {
 
   async findByEmail(email: string) {
     return await this.model.findOne({ email })
+  }
+
+  async comparePassword(password: string, hashPassword: string) {
+    return await bcrypt.compare(password, hashPassword)
+  }
+
+  async toJson(user) {
+    return {
+      id: user._id,
+      name: user.name,
+      email: user.email,
+      token: await this.createToken(user._id)
+    }
   }
 }
