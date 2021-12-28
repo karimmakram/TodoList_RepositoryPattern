@@ -8,14 +8,16 @@ export class TodoRepository extends Repository {
   }
 
   async create(data: ITodo) {
-    try {
-      return await new this.model({
-        title: data.title,
-        completed: data.completed ? data.completed : false,
-        user: data.user
-      }).save()
-    } catch (error) {
-      throw new Error(String(error))
-    }
+    return await new this.model(data).save()
+  }
+  async findByUserId(userID: string) {
+    return await this.model.find({ user: userID })
+  }
+
+  async findAll() {
+    return await this.model
+      .find()
+      .populate({ path: 'user', select: '-password' })
+      .exec()
   }
 }

@@ -1,7 +1,6 @@
-import { injectable } from 'inversify'
 import { TodoRepository } from '../../Infrastructure/repos/TodoRepository'
 import { ITodo } from '../interfaces/ITodo'
-@injectable()
+
 export class TodoService {
   constructor(private readonly todoRepo: TodoRepository) {}
   async createTodo(data: ITodo) {
@@ -25,5 +24,11 @@ export class TodoService {
     } catch (error) {
       throw new Error('invalid type ID')
     }
+  }
+
+  async getUserTodo(userId: string) {
+    const todos = await this.todoRepo.findByUserId(userId)
+    if (todos.length == 0) return 'user have not todo ever'
+    return todos
   }
 }

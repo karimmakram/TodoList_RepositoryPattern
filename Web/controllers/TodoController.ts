@@ -2,7 +2,7 @@ import { ITodo } from '../../Domain/interfaces/ITodo'
 import { TodoService } from '../../Domain/service/TodoService'
 import { Request, Response } from 'express'
 import { TodoRepository } from '../../Infrastructure/repos/TodoRepository'
-
+import { validationResult } from 'express-validator'
 export class TodoController {
   private todoService = new TodoService(new TodoRepository())
 
@@ -31,6 +31,25 @@ export class TodoController {
       res.status(400).json({
         error: String(error).split('\n')[0]
       })
+    }
+  }
+  async getOwnTodo(req: Request, res: Response) {
+    try {
+      res.send(await this.todoService.getUserTodo(req.userId))
+    } catch (error) {
+      res.status(500).send('server Error')
+    }
+  }
+
+  async getTodoByUserId(req: Request, res: Response) {
+    const errors = validationResult(req)
+    if (!errors.isEmpty())
+      return res.status(400).send(errors.array().map(e => e.msg))
+    const id: string = req.params.id
+    try {
+      res.send(await this.todoService.getUserTodo(id))
+    } catch (error) {
+      res.status(500).send('ID error')
     }
   }
 }
